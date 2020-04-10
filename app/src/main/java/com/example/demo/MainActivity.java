@@ -1,11 +1,15 @@
 package com.example.demo;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,7 +26,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends baseactivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
+public class MainActivity extends baseactivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
 
     private String downurl = "http://47.92.151.250:8081/profile/download/GZZM_SJV1.1.3.apk";
     private DownloadBuilder builder;
@@ -33,6 +37,7 @@ public class MainActivity extends baseactivity implements View.OnClickListener,S
     private List<Bean> mData = new ArrayList<>();
     private Bean bean;
     private int mCount = 0;
+    private ImageView img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,10 @@ public class MainActivity extends baseactivity implements View.OnClickListener,S
         upa_btn.setOnClickListener(this);
         swipe_refresh_layout = findViewById(R.id.swipe_refresh_layout);
         recyclerView = findViewById(R.id.listview);
+        img = findViewById(R.id.img);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.renwu_banner_qgl, null);
+        img.setImageBitmap(ImageUtil.drawTextToRightBottom(this, bitmap,"青格乐",16, Color.parseColor("#FF0000"),15,10));
+
     }
 
     @Override
@@ -64,10 +73,12 @@ public class MainActivity extends baseactivity implements View.OnClickListener,S
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Toast.makeText(MainActivity.this,position+"",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_LONG).show();
             }
         });
         getData();
+
+
     }
 
     private void sendRequest() {
@@ -110,10 +121,10 @@ public class MainActivity extends baseactivity implements View.OnClickListener,S
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.upa_btn:
-                Log.d("版本号",getLocalVersion(this)+"");
-                Log.d("版本名称",getLocalVersionName(this)+"");
+                Log.d("版本号", getLocalVersion(this) + "");
+                Log.d("版本名称", getLocalVersionName(this) + "");
                 sendRequest();
                 break;
         }
@@ -130,13 +141,14 @@ public class MainActivity extends baseactivity implements View.OnClickListener,S
         mData.clear();
         mCount = 1;
     }
+
     @Override
     public void onLoadMoreRequested() {
         mCount = mCount + 1;
         getData();
     }
 
-    private void getData(){
+    private void getData() {
         swipe_refresh_layout.setRefreshing(false);
         List<Bean> memberList = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
